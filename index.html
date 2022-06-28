@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        form {
+            max-width: 40%;
+            margin: 40px auto;
+
+        }
+
+        .wrapper {
+            padding: 16px;
+            overflow: hidden;
+            margin: auto auto;
+            max-width: fit-content;
+        }
+
+        input[type=text],
+        input[type=password] {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 5px 22px 5px;
+            display: inline-block;
+            border: none;
+            background: #f1f1f1;
+        }
+
+        input[type=text]:focus,
+        input[type=password]:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+        hr {
+            border: 1px solid #f1f1f1;
+            margin-bottom: 25px;
+        }
+
+        button {
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        button:hover {
+            opacity: 1;
+        }
+
+        .gameBtn {
+            justify-content: space-around;
+            margin: auto;
+            padding: 15px;
+            display: inline-block;
+            height: 200px;
+            width: 200px;
+            border-radius: 50%;
+            border: 1px solid red;
+        }
+
+        .signinbtn {
+            padding: 14px 20px;
+            background-color: #3652f4;
+        }
+
+        .signinbtn,
+        .signupbtn {
+            float: left;
+            width: 50%;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="" style="border:1px solid #ccc" id="form">
+        <div class="wrapper">
+            <h1>sign up</h1>
+            <p>please fill in this form to create an account</p>
+            <hr>
+
+            <label for="name"><b> Name</b></label>
+            <input type="text" placeholder="Enter Name" name="name" id="name">
+            <label for="password"><b> Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" id="password">
+            <div class="clearfix">
+                <button type="button" class="signinbtn">Sign in</button>
+                <button type="submit" class="signupbtn">Create account</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        document.querySelector(".signupbtn").onclick = usersArray;
+        document.querySelector(".signinbtn").onclick = signin;
+        function usersArray() {
+            const users = JSON.parse(window.localStorage.getItem("users")) || [];
+            let name = document.getElementById("name").value;
+            let password = document.getElementById("password").value;
+            let progress = [];
+            let user = {
+                "name": name,
+                "password": password,
+                "progress": progress
+            }
+            if (availableName(name, users)) {
+                pushUser(users, user);
+
+            } else {
+                return alert(`${name} unavailable`)
+            }
+        }
+        function startGame() {
+            let form = document.querySelector("#form");
+            form.innerHTML = '<button type="button" class="gameBtn" id="ticBtn">Tic Tac Toe</button><button type="button" class="gameBtn" id="memoryBtn">Memory game</button>';
+            document.querySelector("#ticBtn").onclick = function redirect() {
+                location.href = "./tictactoe.html"
+            }
+            document.querySelector("#memoryBtn").onclick = function redirect() {
+                location.href = "./memory.html"
+            }
+        }
+        function pushUser(users, user) {
+            users.push(user);
+            window.localStorage.setItem("users", JSON.stringify(users));
+            window.localStorage.setItem("loggedUser", JSON.stringify(user.name));
+            startGame();
+        }
+
+        function availableName(name, users) {
+            for (let i = 0; i < users.length; i++) {
+                if (users[i].name == name) {
+                    return false
+                }
+            }
+            return true
+        }
+        function signin() {
+            const users = JSON.parse(window.localStorage.getItem("users"));
+            let name = document.getElementById("name").value;
+            let password = document.getElementById("password").value;
+            for (let i = 0; i < users.length; i++) {
+                if (users[i].name == name) {
+                    if (users[i].password == password) {
+                        window.localStorage.setItem("loggedUser", JSON.stringify(name));
+                        window.localStorage.setItem("userIndex", JSON.stringify(i));
+                        return startGame();
+                    }
+                    return alert("incoreect password")
+                }
+
+            }
+            return alert("username not fount")
+        }
+
+    </script>
+</body>
+
+</html>
